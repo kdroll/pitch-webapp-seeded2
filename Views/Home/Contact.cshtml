@@ -1,0 +1,459 @@
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<style>
+/* USER PROFILE PAGE */
+ .card {
+    margin-top: 20px;
+    padding: 30px;
+    background-color: rgba(214, 224, 226, 0.2);
+    -webkit-border-top-left-radius:5px;
+    -moz-border-top-left-radius:5px;
+    border-top-left-radius:5px;
+    -webkit-border-top-right-radius:5px;
+    -moz-border-top-right-radius:5px;
+    border-top-right-radius:5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.card.hovercard {
+    position: relative;
+    padding-top: 0;
+    overflow: hidden;
+    text-align: center;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+}
+.card.hovercard .card-background {
+    height: 130px;
+}
+.card-background img {
+    -webkit-filter: blur(25px);
+    -moz-filter: blur(25px);
+    -o-filter: blur(25px);
+    -ms-filter: blur(25px);
+    filter: blur(25px);
+    margin-left: -100px;
+    margin-top: -200px;
+    min-width: 130%;
+}
+.card.hovercard .useravatar {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+}
+.card.hovercard .useravatar img {
+    width: 100px;
+    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.5);
+}
+.card.hovercard .card-info {
+    position: absolute;
+    bottom: 14px;
+    left: 0;
+    right: 0;
+}
+.card.hovercard .card-info .card-title {
+    padding:0 5px;
+    font-size: 20px;
+    line-height: 1;
+    color: #262626;
+    background-color: rgba(255, 255, 255, 0.1);
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.card.hovercard .card-info {
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    color: #737373;
+    text-overflow: ellipsis;
+}
+.card.hovercard .bottom {
+    padding: 0 20px;
+    margin-bottom: 17px;
+}
+.btn-pref .btn {
+    -webkit-border-radius:0 !important;
+}
+
+</style>
+
+
+
+<div class="col-lg-12 col-sm-12">
+    <div class="card hovercard">
+        <div class="card-background">
+            <!-- IMAGE BACKGROUND -->
+            <!--<img class="card-bkimg" alt="" src="http://lorempixel.com/100/100/people/9/">-->
+            <!-- http://lorempixel.com/850/280/people/9/ -->
+        </div>
+        <div class="useravatar">
+            <img alt="" src="https://image.freepik.com/free-icon/headphones-with-music-note_318-43350.jpg">
+        </div>
+        <div class="card-info"> <span class="card-title" id="usernameDisplay"></span>
+        <script>
+
+            var name = 'username' + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                    if (c.substring(name.length, c.indexOf(":")).length != 0) {
+                        document.getElementById("usernameDisplay").innerHTML = "" + c.substring(name.length, c.indexOf(":"));
+                    }
+                }
+            }
+        
+
+        </script>
+        </div>
+    </div>
+    <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" id="favorites" class="btn btn-default" href="#tab2" data-toggle="tab"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                <div class="hidden-xs">Playlists</div>
+            </button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" id="following" class="btn btn-default" href="#tab3" data-toggle="tab"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                <div class="hidden-xs">Friends</div>
+            </button>
+        </div>
+         <div class="btn-group" role="group">
+            <button type="button" id="notifications" class="btn btn-default" href="#tab4" data-toggle="tab"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                <div class="hidden-xs">Notifications</div>
+            </button>
+        </div>
+    </div>
+
+        <div class="well">
+      <div class="tab-content">
+        <div class="tab-pane fade in" id="tab1">
+          
+        </div>
+
+        <div class="tab-pane fade in" id="tab2">
+          
+          <div id="playlists"></div>
+        </div>
+        <div class="tab-pane fade in" id="tab3">
+          <div id="littleOne"></div>
+        </div>
+         <div class="tab-pane fade in" id="tab4">
+             <div id="bigOne"></div>
+             <div id="groupRequests"></div>
+        </div>
+      </div>
+    </div>
+    
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+    <script>/*
+        $(document).ready(function() {
+$(".btn-pref .btn").click(function () {
+    $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
+     $(".tab").addClass("active"); // instead of this do the below 
+    //$(this).removeClass("btn-default").addClass("btn-primary");   
+});
+});*/
+        var favorites = document.getElementById("favorites");
+        var following = document.getElementById("following");
+        var notifications = document.getElementById("notifications");
+        favorites.onclick = function() {
+            favorites.className = "btn btn-primary";
+            following.className = "btn btn-default";
+            notifications.className = "btn btn-default";
+        };
+        following.onclick = function() {
+            favorites.className = "btn btn-default";
+            following.className = "btn btn-primary";
+            notifications.className = "btn btn-default";
+        };
+        notifications.onclick = function() {
+            favorites.className = "btn btn-default";
+            following.className = "btn btn-default";
+            notifications.className = "btn btn-primary";
+        };
+
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCOfxbo4JVNrgeC3OD6M_hGMsb1-JH7oZo",
+                authDomain: "pitch-8ef64.firebaseapp.com",
+                databaseURL: "https://pitch-8ef64.firebaseio.com",
+                storageBucket: "",
+                messagingSenderId: "953525203925"
+            };
+            firebase.initializeApp(config);
+
+            var friends = [];
+            var dbRef = firebase.database().ref().child('Friendships');
+            dbRef.on('value', snap => bigOne.innerHTML = getPending(snap.val()));
+
+            var dbRef = firebase.database().ref().child('GroupRelationships');
+            dbRef.on('value', snap => groupRequests.innerHTML = getPendingGroupRequests(snap.val()));
+            dbRef.on('value', snap => playlists.innerHTML = getPlaylists(snap.val()));
+
+
+            /*function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                         return c.substring(name.length, c.indexOf(":"));
+                    }
+                }
+                return "";
+            }*/
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        if (c.substring(name.length, c.indexOf(":")).length != 0)
+                          return c.substring(name.length, c.indexOf(":"));
+                    }
+                }
+                document.getElementById("userSignedIn").innerHTML = "Log In";
+                return "";
+            }
+
+            function getUserId(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        return parseInt(c.substring(c.indexOf(":") + 1, c.length));
+                    }
+                }
+                document.getElementById("userSignedIn").innerHTML = "Log In";
+                return 0;
+            }
+
+function acceptRequest(recvId, sendId, key) {
+    firebase.database().ref('Friendships/' + key).set({
+        recvId: recvId,
+        sendId: sendId,
+        status : 1
+    });
+}
+
+function declineRequest(recvId, sendId, key) {
+    firebase.database().ref('Friendships/' + key).set({
+        recvId: recvId,
+        sendId: sendId,
+        status : 0
+    });
+}
+
+function acceptGroupRequest(groupId, recvId, sendId, key) {
+    firebase.database().ref('GroupRelationships/' + key).set({
+        groupId: groupId,
+        recvId: recvId,
+        sendId: sendId,
+        status : 1
+    });
+}
+
+function declineGroupRequest(groupId, recvId, sendId, key) {
+    firebase.database().ref('GroupRelationships/' + key).set({
+        groupId: groupId,
+        recvId: recvId,
+        sendId: sendId,
+        status : 0
+    });
+}
+
+function getFriends() {
+    var userId = getUserId('username');
+    friends = [];
+    var i = 0;
+        var ref = firebase.database().ref().child("Friendships");
+            ref.orderByValue().on("value", function(snapshot) {
+                snapshot.forEach(function(data) {
+                    i = friends.length;
+                    friendshipObject = data.val();
+                    var notUnique = false;
+                    var isSameUser = 0;
+                    if(friendshipObject.recvId == userId && friendshipObject.status == 1) {
+                        for(var j = 0; j < friends.length; j++) {
+                            if(friends[j] == friendshipObject.sendId) {
+                                notUnique = true;
+                            }
+                        }
+                        if(!notUnique) {
+                            friends[i] = friendshipObject.sendId;
+                            i++;
+                        }
+                    }
+                    if(friendshipObject.sendId == userId && friendshipObject.status == 1) {
+                        for(var j = 0; j < friends.length; j++) {
+                            if(friends[j] == friendshipObject.sendId) {
+                                notUnique = true;
+                            }
+                        }
+                        if(!notUnique) {
+                            friends[i] = friendshipObject.recvId;
+                            i++;
+                        }
+                    }
+                    
+                });
+            });
+}
+
+function getPending(friendships) {
+            littleOne.innerHTML = "";
+            getFriends();
+            if(friends.length == 0) {
+                littleOne.innerHTML = "<h2>None</h2>";
+            }
+            var myTable= "";
+            var displayOnce = 0;
+            var userId = getUserId('username');
+            for(let key in friendships){
+                if(friendships.hasOwnProperty(key)){
+                    if(true) {
+                        // Do Something with it. Access it via users[key]
+                        var name ="";
+                        var ref = firebase.database().ref().child("Users");
+                        var foundUser = false;
+                        ref.orderByValue().on("value", function(snapshot) {
+                            snapshot.forEach(function(data) {
+                                var copy="";
+                                copy += "<div class='container'>";
+                                copy += "<div class='row'>";
+                                copy += "<div class = 'col-sm-4'>";
+                                var user = data.val();
+                                copy += user.username + "</div>";
+                                copy += "<div class = 'col-sm-4'>Be my friend!</div><div class = 'col-sm-4'>"
+
+                                copy += '<button style="color:green;" onclick="acceptRequest(' + userId + ', ' + friendships[key].sendId + ', \'' + key + '\')">Accept</button><button style="color:red;" onclick="declineRequest(' + userId + ', ' + friendships[key].sendId + ', \'' + key + '\')">Decline</button></div></div></div><br>';
+                                if(friendships[key].recvId == userId && user.userId == friendships[key].sendId && foundUser == false && friendships[key].status == 2) {
+                                    myTable += copy;
+                                    bigOne.innerHTML += copy;
+                                }
+                                if(friends.length > 0) {
+                                var i = 0;
+                                var copy2="";
+                                while (i < friends.length) {
+                                    if(friends[i] == user.userId && displayOnce < friends.length) {
+                                        displayOnce++;
+                                        copy2 += "<div class='container'>";
+                                        copy2 += "<div class='row'>";
+                                        copy2 += user.username + "</div></div><br>"
+                                    }
+                                    i++;
+                                }
+                                littleOne.innerHTML += copy2;
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+            return myTable;
+        }
+
+        function getPendingGroupRequests(groupRelationships) {
+            groupRequests.innerHTML = "";
+            getFriends();
+            var myTable= "";
+            var userId = getUserId('username');
+            for(let key in groupRelationships){
+                if(groupRelationships.hasOwnProperty(key)){
+                    if(true) {
+                        // Do Something with it. Access it via users[key]
+                        var name ="";
+                        var ref = firebase.database().ref().child("Users");
+                        var foundUser = false;
+                        ref.orderByValue().on("value", function(snapshot) {
+                            snapshot.forEach(function(data) {
+                                var groupName = "";
+                                var groupsRef = firebase.database().ref().child("Groups");
+                                groupsRef.orderByValue().on("value", function(snapshot) {
+                                    snapshot.forEach(function(data) {
+                                        if(groupRelationships[key].groupId == data.val().groupId) {
+                                            groupName = data.val().groupname;
+                                        }
+                                    });
+                                    var copy="";
+                                copy += "<div class='container'>";
+                                copy += "<div class='row'>";
+                                copy += "<div class = 'col-sm-4'>";
+                                var user = data.val();
+                                copy += user.username + "</div>";
+                                copy += "<div class = 'col-sm-4'>Join My Group: "
+                                copy += groupName;
+                                copy += "</div><div class = 'col-sm-4'>"
+
+                                copy += '<button style="color:green;" onclick="acceptGroupRequest(' + groupRelationships[key].groupId + ", " + userId + ', ' + groupRelationships[key].sendId + ', \'' + key + '\')">Accept</button><button style="color:red;" onclick="declineGroupRequest(' + groupRelationships[key].groupId + ", " + userId + ', ' + groupRelationships[key].sendId + ', \'' + key + '\')">Decline</button></div></div></div><br>';
+                                if(groupRelationships[key].recvId == userId && user.userId == groupRelationships[key].sendId && foundUser == false && groupRelationships[key].status == 2) {
+                                    myTable += copy;
+                                    groupRequests.innerHTML += copy;
+                                }
+                                });
+                            });
+                        });
+                    }
+                }
+            }
+            return myTable;
+        }
+
+        function getPlaylists(groupRelationships) {
+            var myTable="";
+            var userId = getUserId('username');
+            for(let key in groupRelationships){
+                if(groupRelationships.hasOwnProperty(key)){
+                    if(userId == groupRelationships[key].recvId) {
+                        var groupname ="";
+                        var groupsRef = firebase.database().ref().child("Groups");
+                        groupsRef.orderByValue().on("value", function(snapshot) {
+                            snapshot.forEach(function(data) {
+                                if(groupRelationships[key].groupId == data.val().groupId) {
+                                    groupName = data.val().groupname;
+                                }
+                            });
+                            var copy="";
+                            copy += "<div class='container'>";
+                            copy += "<div class='row'>";
+                            copy += groupName + "</div></div><br>"
+                            myTable += copy;
+                            playlists.innerHTML += copy;
+                        });
+                    }
+                }
+            }
+            return myTable;
+        }
+
+</script>

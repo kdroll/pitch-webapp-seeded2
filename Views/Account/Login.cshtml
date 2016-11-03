@@ -1,0 +1,157 @@
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<!--<h2 id="title"></h2>
+<body onload="getCookie('username')">
+<p>Username</p><input type="text" id="username">
+<p>Password</p><input type="password" id="password">
+
+<button type="button" onclick="saveUser()">click me</button>
+<p id="userSignedIn"></p>-->
+
+<style>
+    body {
+	background: #eee !important;	
+}
+
+.wrapper {	
+	margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.form-signin {
+  max-width: 380px;
+  padding: 15px 35px 45px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.1);  
+
+  .form-signin-heading,
+	.checkbox {
+	  margin-bottom: 30px;
+	}
+
+	.checkbox {
+	  font-weight: normal;
+	}
+
+	.form-control {
+	  position: relative;
+	  font-size: 16px;
+	  height: auto;
+	  padding: 10px;
+
+	}
+
+	input[type="text"] {
+	  margin-bottom: -1px;
+	  border-bottom-left-radius: 0;
+	  border-bottom-right-radius: 0;
+	}
+
+	input[type="password"] {
+	  margin-bottom: 20px;
+	  border-top-left-radius: 0;
+	  border-top-right-radius: 0;
+	}
+}
+</style>
+
+ <div class="wrapper">
+    <form class="form-signin">       
+      <h2 id="title" class="form-signin-heading">Log In</h2>
+      <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" id="username"/>
+      <input type="password" class="form-control" name="password" placeholder="Password" required="" id="password"/>     
+          <div class="alert alert-danger" style="display:none;" id = "alert">
+                <strong>Error!</strong> Wrong Username/Password
+    </div>
+      <button class="btn btn-lg btn-primary btn-block" type="button" onclick="saveUser()">Login</button>   
+    </form>
+
+  </div>
+
+
+
+<h1 id="bigOne"></h1>
+
+        <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+        <script type="text/javascript">
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCOfxbo4JVNrgeC3OD6M_hGMsb1-JH7oZo",
+                authDomain: "pitch-8ef64.firebaseapp.com",
+                databaseURL: "https://pitch-8ef64.firebaseio.com",
+                storageBucket: "",
+                messagingSenderId: "953525203925"
+            };
+            firebase.initializeApp(config);
+
+    function saveUser() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        var ref = firebase.database().ref().child("Users");
+        ref.orderByValue().on("value", function(snapshot) {
+            var userExist = false;
+            var userId = 0;
+            snapshot.forEach(function(data) {
+                if(data.val().username == username && data.val().password == password) {
+                    userExist = true;
+                    userId = data.val().userId;
+                }
+                else {
+                    document.getElementById("alert").style.display = "block";
+                }
+            });
+            if(userExist == true) {
+            //place code here
+            document.getElementById("alert").style.display = "none";
+                document.cookie = "username="+username+"; userId=" + userId + "; path=/";
+                setCookie("username", username,userId, 30);
+                document.location.href = "http://localhost:5000/Home/Contact";
+            } else {
+                document.getElementById("alert").style.display = "block";
+            }
+        });
+    }
+
+    function setCookie(cname,cvalue,userId,exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires=" + d.toGMTString();
+        var separator = ":";
+        var values = [cvalue,userId].join(separator);
+        document.cookie = cname+"="+values+"; "+expires + ";path=/";
+        getCookie("username");
+    }
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            document.getElementById("title").innerHTML = "Sign in as a different user";
+            if (c.substring(name.length, c.indexOf(":")).length != 0)
+                return c.substring(name.length, c.indexOf(":"));
+        }
+    }
+    document.getElementById("title").innerHTML = "Log In";
+    return "";
+}
+
+</script>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

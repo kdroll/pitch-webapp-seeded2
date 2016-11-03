@@ -1,0 +1,456 @@
+@{
+    ViewData["Title"] = "Playlist";
+}
+
+<style>
+  body {
+      position: relative;
+      background-color:#e0e2e5;
+  }
+  #section1 {padding-top:50px;height:250px;color: #fff; background-color: #ccc947;}
+  #section2 {padding-top:50px;height:250px;color: #fff; background-color: #82803a;}
+  #section3 {padding-top:50px;height:250px;color: #fff; background-color: #41ad84;}
+
+h1{
+  font-size: 30px;
+  color: #333333;
+  text-transform: uppercase;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 15px;
+}
+table{
+  width:100%;
+  table-layout: fixed;
+}
+.tbl-header{
+  background-color: rgba(255,255,255,0.3);
+ }
+.tbl-content{
+  height:300px;
+  overflow-x:auto;
+  margin-top: 0px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+th{
+  padding: 20px 15px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: #333333;
+  text-transform: uppercase;
+}
+td{
+  padding: 15px;
+  text-align: left;
+  vertical-align:middle;
+  font-weight: 300;
+  font-size: 12px;
+  color: #333333;
+  border-bottom: solid 1px rgba(255,255,255,0.1);
+}
+
+/* demo styles */
+
+
+body{
+  /*background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+  background: linear-gradient(to right, #25c481, #25b7c4);*/
+  font-family: 'Roboto', sans-serif;
+}
+section{
+  margin: 50px;
+}
+</style>
+<div id = "overlay" style="padding-top:5%;">
+<div id = "header" class="jumbotron container text-center">
+  <h1 id="playListName" style="font-family:Impact; color:#5c6066; font-size:1000%"></h1>
+  <p id="createdBy">Created By: </p> 
+</div>
+</div>
+
+
+<section> <!--for demo wrap-->
+<h1>Songs</h1>  
+<div  class="tbl-header">
+<table cellpadding="0" cellspacing="0" border="0">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Artist</th>
+      <th>Album</th>
+    </tr>
+  </thead>
+</table>
+</div>
+<div  class="tbl-content" onmouseover="document.body.style.overflow='hidden';" onmouseout="document.body.style.overflow='auto';">
+<table cellpadding="0" cellspacing="0" border="0">
+  <tbody id=songsInPlaylist>
+  </tbody>
+</table>
+</div>
+</section>
+
+
+<div class="container" style="text-align:center;">
+  <button onclick="postPlaylistToFeed()" class="btn btn-default btn-primary" style=" background-color:green; width:200px;">Share to feed</button>
+</div>
+
+
+<section> <!--for demo wrap-->
+<h1>Songs to vote on</h1>  
+<div  class="tbl-header">
+<table cellpadding="0" cellspacing="0" border="0">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Artist</th>
+      <th>Album</th>
+      <th>Total Votes</th>
+      <th>Votes Needed To Pass</th>
+      <th>Vote Yes</th>
+      <th>Vote No</th>
+    </tr>
+  </thead>
+</table>
+</div>
+<div  class="tbl-content" onmouseover="document.body.style.overflow='hidden';" onmouseout="document.body.style.overflow='auto';">
+<table cellpadding="0" cellspacing="0" border="0">
+  <tbody id="songsToVote">
+  </tbody>
+</table>
+</div>
+</section>
+
+
+
+
+
+
+<!--
+<div class="container">
+    <div class="container-fluid">
+        <div class="row">
+            <div id = "section1" class="container-fluid">
+            <h3>Work Friends</h3>
+                <div class="container-fluid">
+                    <div style="margin-left: 5%" class="row">
+                        <p>John Doe</p>
+                    </div>
+                    <div style="margin-left: 5%" class="row">
+                        <p>Jane Smith</p>
+                    </div>
+                    <div style="margin-left: 5%" class="row">
+                        <p>Elmo Bob</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-default">View Group Pitchlist</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div id = "section2" class="container-fluid">
+            <h3>School Friends</h3>
+                <div class="container-fluid">
+                    <div style="margin-left: 5%" class="row">
+                        <p>Beep Bop</p>
+                    </div>
+                    <div style="margin-left: 5%" class="row">
+                        <p>Bip Bap</p>
+                    </div>
+                    <div style="margin-left: 5%" class="row">
+                        <p>Boop Boop</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-default">View Group Pitchlist</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div id = "section3" class="container-fluid">
+            <h3>Cool Kidz</h3>
+                <div class="container-fluid">
+                    <div style="margin-left: 5%" class="row">
+                        <p>James Starr</p>
+                    </div>
+                    <div style="margin-left: 5%" class="row">
+                        <p>Robbie Beuler</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-default">View Group Pitchlist</button>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+        <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCOfxbo4JVNrgeC3OD6M_hGMsb1-JH7oZo",
+                authDomain: "pitch-8ef64.firebaseapp.com",
+                databaseURL: "https://pitch-8ef64.firebaseio.com",
+                storageBucket: "",
+                messagingSenderId: "953525203925"
+            };
+            firebase.initializeApp(config);
+
+            var numInGroup = 0;;
+            
+            var playListName = document.getElementById('playListName');
+            var dbRef = firebase.database().ref().child('Groups');
+            dbRef.on('value', snap => playListName.innerHTML = getGroups(snap.val()));
+
+            var dbRef2 = firebase.database().ref().child('GroupRelationships');
+            dbRef2.on('value', snap => createdBy.innerHTML = getCreatedBy(snap.val()));
+
+            var songsList;
+            var votesList;
+
+            var songsInPlaylist = document.getElementById('songsInPlaylist');
+            var songsToVote = document.getElementById('songsToVote');
+            var dbRef3 = firebase.database().ref().child('Songs');
+            var dbRef4 = firebase.database().ref().child('Songs');
+            dbRef3.on('value', snap => songsInPlaylist.innerHTML = getSongsInPlaylist(snap.val()));
+            dbRef4.on('value', snap => songsToVote.innerHTML = getSongsForVote(snap.val()));
+
+            var dbRef5 = firebase.database().ref().child('Votes');
+            dbRef5.on('value', snap => votesList = getVotes(snap.val()));
+
+            function postPlaylistToFeed() {
+              var groupId = document.URL;
+              groupId = parseInt(groupId.substring((groupId.indexOf('Playlist/') + 9), (groupId.indexOf('?'))));
+              var d = new Date();
+              var n = d.getTime();
+              var userId = getUserId('username');
+              var feedRef = firebase.database().ref().child("Feed");
+              var newFeedRef = feedRef.push();
+                            newFeedRef.set({
+                                timestamp: n,
+                                userId: userId,
+                                songId: 0,
+                                groupId: groupId,
+                                username: getCookie('username')
+                            });
+            }
+
+
+            function getVotes(votes) {
+              votesList = votes;
+              return votes;
+            }
+
+            function getSongsInPlaylist(songs) {
+              var stringSongs = "";
+              var groupId = document.URL;
+              groupId = parseInt(groupId.substring((groupId.indexOf('Playlist/') + 9), (groupId.indexOf('?'))));
+              for(let key in songs){
+                    if(songs.hasOwnProperty(key)){
+                      if(songs[key].inPlaylist == true && songs[key].groupId == groupId) {
+                        stringSongs += "<tr>";
+                        stringSongs += getSongInfo(songs[key].songId);
+                        stringSongs += "</tr>";
+                      }
+                    }
+              } 
+              songsInPlaylist.innerHTML = stringSongs;
+              return stringSongs;
+            }
+            
+            function getSongInfo(songId) {
+              var returnString = "";
+              var xhr = new XMLHttpRequest();
+              xhr.onreadystatechange = function(e) {
+                if(xhr.readyState === 4) {
+                  if (xhr.status === 200) {
+                      var obj = JSON.parse(xhr.response);
+                      returnString = "<td>" + obj.name + "</td><td>" + obj.artists[0].name + "</td><td>" + obj.album.name + "</td>";
+                  } else {
+                      console.error("Search failed. ", xhr.status);
+                  }
+                }
+              }
+              xhr.ontimeout = function() {
+                console.error("request timed out. ", xhr);
+              }
+              xhr.open("get", "https://api.spotify.com/v1/tracks/" + songId, false);
+              xhr.send();
+              return returnString;
+            }
+
+            function getSongsForVote(songs) {
+              songsList = songs;
+              var stringSongs2 = "";
+              var groupId = document.URL;
+              groupId = groupId.substring((groupId.indexOf('Playlist/') + 9), (groupId.indexOf('?')));
+              var ref = firebase.database().ref().child("GroupRelationships");
+              ref.orderByValue().on("value", function(snapshot) {
+                var numOfPeopleInGroup = 0
+                snapshot.forEach(function(data) {
+                  if(data.val().groupId == groupId) {
+                    numOfPeopleInGroup++;
+                  }
+                });
+                numInGroup = numOfPeopleInGroup;
+                for(let key in songs){
+                    if(songs.hasOwnProperty(key)){
+                      if(songs[key].inPlaylist == false) {
+                        stringSongs2 += "<tr>";
+                        stringSongs2 += getSongInfo(songs[key].songId);
+                        stringSongs2 += "<td>" + (songs[key].plusVote + songs[key].negVote) + "</td>";
+                        if(numOfPeopleInGroup % 2 == 0) {
+                          stringSongs2 += "<td>" + Math.floor((numOfPeopleInGroup/2) - (songs[key].plusVote)) + "</td>";
+                        } else {
+                          stringSongs2 += "<td>" + Math.floor(((numOfPeopleInGroup/2) + 1) - (songs[key].plusVote)) + "</td>";
+                        }
+                       stringSongs2 += "<td><button style = 'color:green;'onclick='vote(1, \"" + songs[key].voteId + "\")'>Vote Yes</button></td><td><button style = 'color:red;'onclick='vote(0, \"" + songs[key].voteId + "\")'>Vote No</button></td>"
+                        stringSongs2 += "</tr>";
+                      }
+                    }
+              } 
+              songsToVote.innerHTML = stringSongs2;
+              //return stringSongs;
+              });
+              return stringSongs2;
+            }
+
+
+            function vote(vote, id) {
+              userId = getUserId('username');
+              vote = parseInt(vote);
+              id = parseInt(id);
+              var dontVote = false;
+              for(let key in votesList) {
+                if(votesList.hasOwnProperty(key)) {
+                    if(votesList[key].userId == userId && votesList[key].voteId == id) {
+                        dontVote = true;
+                    }
+                }
+              }
+              var voteRef = firebase.database().ref().child("Votes");
+                if(dontVote == false) {
+                 var newvoteRef = voteRef.push();
+                 newvoteRef.set({
+                    userId: userId,
+                    vote: vote,
+                    voteId: id
+                });
+                for(let key in songsList){
+                    if(songsList.hasOwnProperty(key) && songsList[key].inPlaylist == false){
+                        if(songsList[key].voteId == id) {
+                          if(vote == 1) {
+                          var inPlaylistvalue = (((Math.ceil(numInGroup / 2) - (songsList[key].plusVote + 1)) <= 0));
+                          //alert(inPlaylistvalue);
+                          if(dontVote == false) {
+                          firebase.database().ref('Songs/' + key).set({
+                            voteId: songsList[key].voteId,
+                            songId: songsList[key].songId,
+                            groupId: songsList[key].groupId,
+                            userId: songsList[key].userId,
+                            plusVote: (songsList[key].plusVote + 1),
+                            negVote: songsList[key].negVote,
+                            inPlaylist: inPlaylistvalue
+                          });
+                          }
+                        } else {
+                          var remove = (((Math.floor(numInGroup / 2) - (songsList[key].negVote + 1)) < 0));
+                          if(dontVote == false) {
+                          if(remove) {
+                            firebase.database().ref('Songs/' + key).remove();
+                          } else {
+                          firebase.database().ref('Songs/' + key).set({
+                            voteId: songsList[key].voteId,
+                            songId: songsList[key].songId,
+                            groupId: songsList[key].groupId,
+                            userId: songsList[key].userId,
+                            plusVote: songsList[key].plusVote,
+                            negVote: (songsList[key].negVote + 1),
+                            inPlaylist: false
+                          });
+                          }
+                          }
+                        }
+                        }
+                    }
+                }
+                } else {
+                  alert("You voted already");
+                }
+            }
+
+            function getGroups(groups) {
+            var groupId = document.URL;
+            groupId = groupId.substring((groupId.indexOf('Playlist/') + 9), (groupId.indexOf('?')));
+              for(let key in groups){
+                    if(groups.hasOwnProperty(key)){ 
+                        if(groups[key].groupId == groupId) {
+                            return groups[key].groupname;
+                        }
+                    }
+              }
+            }
+
+            function getUserId(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        return parseInt(c.substring(c.indexOf(":") + 1, c.length));
+                    }
+                }
+                document.getElementById("userSignedIn").innerHTML = "Log In";
+                return 0;
+            }
+
+            function getCreatedBy(groupRelationships) {
+            var groupID = document.URL;
+            var username;
+            groupID = groupID.substring((groupID.indexOf('Playlist/') + 9), (groupID.indexOf('?')));
+              for(let key in groupRelationships){
+                    if(groupRelationships.hasOwnProperty(key)){ 
+                        if(groupRelationships[key].groupId == groupID && groupRelationships[key].sendId ==  groupRelationships[key].recvId) {
+                          var ref = firebase.database().ref().child("Users");
+                          ref.orderByValue().on("value", function(snapshot) {
+                               snapshot.forEach(function(data) {
+                                  if(data.val().userId == groupRelationships[key].sendId) {
+                                    createdBy.innerHTML = "Created By: " + data.val().username;
+                                    username = data.val().username;
+                                  }
+
+                               });
+                               return username;
+                          });
+                        }
+                    }
+              }
+            }
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        if (c.substring(name.length, c.indexOf(":")).length != 0)
+                            return c.substring(name.length, c.indexOf(":"));
+                    }
+                }
+                document.getElementById("userSignedIn").innerHTML = "Log In";
+                return "";
+            }
+
+</script>

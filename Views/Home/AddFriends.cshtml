@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "AddFriends";
+}
+
+
+<style>
+ body {
+    background-color: #eee;
+}
+
+*[role="form"] {
+    max-width: 530px;
+    padding: 15px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 0.3em;
+}
+
+*[role="form"] h2 {
+    margin-left: 5em;
+    margin-bottom: 1em;
+}
+  </style>
+
+ <div class="container">
+            <form class="form-horizontal" role="form">
+                <h2>Add Friends</h2>
+                <section> <!--for demo wrap-->
+<div id=friendsToAdd>
+    </div>  
+
+<br/>
+</div>
+</section>
+</form>
+
+<body onload="getCookie('username')">
+<p id="userSignedIn"></p>
+
+<h1 id="bigOne"></h1>
+
+         <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCOfxbo4JVNrgeC3OD6M_hGMsb1-JH7oZo",
+                authDomain: "pitch-8ef64.firebaseapp.com",
+                databaseURL: "https://pitch-8ef64.firebaseio.com",
+                storageBucket: "",
+                messagingSenderId: "953525203925"
+            };
+            firebase.initializeApp(config);
+
+            var friendsToAdd = document.getElementById('friendsToAdd');
+            var dbRef = firebase.database().ref().child('Friendships');
+            
+            dbRef.on('value', snap => friendsToAdd.innerHTML = getFriendsToAdd(snap.val())); 
+
+            function getFriendsToAdd(friendships) {
+                friendsToAdd.innerHTML = "";
+                var myTable = "";
+                var groupId = document.URL;
+                groupId = groupId.substring((groupId.indexOf('AddFriends/') + 11), (groupId.indexOf('?')));
+                var friendIds = [];
+                var friendNames = [];
+                var i = 0;
+                var userId = getUserId('username');
+                for(let key in friendships){
+                    if(friendships.hasOwnProperty(key)){
+                        if(friendships[key].recvId == userId) {
+                            var unique = true;
+                            for(var j = 0; j < friendIds.length; j++) {
+                                if(friendIds[j] == friendships[key].send) {
+                                    unique = false;
+                                }
+                            }
+                            if(unique == true) {
+                                friendIds[i] = friendships[key].sendId;
+                                friendNames[i] = "";
+                                i++;
+                            }
+                        } else if(friendships[key].sendId == userId) {
+                            var unique = true;
+                            for(var j = 0; j < friendIds.length; j++) {
+                                if(friendIds[j] == friendships[key].recvId) {
+                                    unique = false;
+                                }
+                            }
+                            if(unique == true) {
+                                friendIds[i] = friendships[key].recvId;
+                                friendNames[i] = "";
+                                i++;
+                            }
+                        }
+                    }
+                }
+                var ref = firebase.database().ref().child("GroupRelationships");
+                var usersref = firebase.database().ref().child("Users");
+                ref.orderByValue().on("value", function(snapshot) {
+                usersref.orderByValue().on("value", function(snapshot2) {
+                    snapshot2.forEach(function(data3) {
+                        for(var q = 0; q < friendIds.length; q++) {
+                            if(friendIds[q] == data3.val().userId) {
+                                friendNames[q] = data3.val().username;
+                            }
+                        }
+                    });
+                    snapshot.forEach(function(data) {
+                        if(data.val().groupId == groupId) {
+                            for(var k = 0; k < friendIds.length; k++) {
+                                if(data.val().recvId == friendIds[k]) {
+                                    friendIds[k] = 0;
+                                    friendNames[k] = "";
+                                }
+                            }
+                        }
+                    });
+                    var copy = "";
+                    copy += "<table><tr><th>Friend</th></tr>";
+                    snapshot2.forEach(function(data2) {
+                        for(var x = 0; x < friendIds.length; x++) {
+                            if(data2.val().userId == friendIds[x]) {
+                                copy += "<tr><td>" + friendNames[x] + "</td>"
+                                copy += "<td><button onclick='inviteToGroup(" + groupId + ", " + userId + ", " + friendIds[x] + ")' class='btn button-default' style='color:green; margin-left:600%;'>Invite</button></td>"
+                                copy += "</tr>"
+                            }
+                        }
+                    });
+                    copy += "</table>"
+                    myTable += copy;
+                    friendsToAdd.innerHTML =  copy;
+                });
+            return myTable;
+            });
+            }
+
+            function inviteToGroup(groupId, userId, friendId) {
+                 var groupRelationships = firebase.database().ref().child("GroupRelationships");
+                 var newgroupRelationships = groupRelationships.push();
+                 newgroupRelationships.set({
+                    groupId: groupId,
+                    sendId: userId,
+                    recvId: friendId,
+                    status: 2
+                });
+            }
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        if (c.substring(name.length, c.indexOf(":")).length != 0)
+                            return c.substring(name.length, c.indexOf(":"));
+                    }
+                }
+                document.getElementById("userSignedIn").innerHTML = "Log In";
+                return "";
+            }
+
+    function getUserId(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                         return parseInt(c.substring(c.indexOf(":") + 1, c.length));
+                    }
+                }
+                return 0;
+            }
+
+</script>

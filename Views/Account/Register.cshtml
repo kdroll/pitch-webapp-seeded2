@@ -1,0 +1,196 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register for Pitch!";
+}
+
+<!--<h2>@ViewData["Title"]</h2>
+
+<p>Username</p><input type="text" id="username">
+<br/><br/>
+<p>Password</p><input type="password" id="password">
+<br/><br/>
+<p>Confirm Password</p><input type="password" id="confirmPass">
+<br/><br/>
+<button type="button" onclick="saveUser()">Register</button>-->
+
+<style>
+    body {
+	background: #eee !important;	
+}
+
+.wrapper {	
+	margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.form-signin {
+  max-width: 380px;
+  padding: 15px 35px 45px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.1);  
+
+  .form-signin-heading,
+	.checkbox {
+	  margin-bottom: 30px;
+	}
+
+	.checkbox {
+	  font-weight: normal;
+	}
+
+	.form-control {
+	  position: relative;
+	  font-size: 16px;
+	  height: auto;
+	  padding: 10px;
+
+	}
+
+	input[type="text"] {
+	  margin-bottom: -1px;
+	  border-bottom-left-radius: 0;
+	  border-bottom-right-radius: 0;
+	}
+
+	input[type="password"] {
+	  margin-bottom: 20px;
+	  border-top-left-radius: 0;
+	  border-top-right-radius: 0;
+	}
+}
+</style>
+
+ <div class="wrapper">
+    <form class="form-signin">       
+      <h2 class="form-signin-heading">Register</h2>
+      <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" id="username"/>
+      <input type="password" class="form-control" name="password" placeholder="Password" required="" id="password"/>     
+      <input type="password" class="form-control" name="password" placeholder="Confirm Password" required="" id="confirmPass"/>       
+      <button class="btn btn-lg btn-primary btn-block" type="button" onclick="saveUser()">Register</button>   
+    </form>
+  </div>
+
+
+
+
+<h1 id="bigOne"></h1>
+
+        <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+        <script type="text/javascript">
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCOfxbo4JVNrgeC3OD6M_hGMsb1-JH7oZo",
+                authDomain: "pitch-8ef64.firebaseapp.com",
+                databaseURL: "https://pitch-8ef64.firebaseio.com",
+                storageBucket: "",
+                messagingSenderId: "953525203925"
+            };
+            firebase.initializeApp(config);
+
+    function saveUser() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var confirmPass = document.getElementById("confirmPass").value;
+        var userId = 0;
+
+        if(password == confirmPass) {
+            if (username.length < 3) {
+                alert("Username too small; must be longer than 3 characters");
+            } else if(password.length < 3) {
+                alert("Password too small; must be longer than 3 characters");
+            } else {
+                var ref = firebase.database().ref().child("Users");
+                ref.orderByValue().on("value", function(snapshot) {
+                    var userExist = false;
+                    snapshot.forEach(function(data) {
+                        if(data.val().username == username) {
+                            userExist = true;
+                        }
+                        userId = data.val().userId;
+                    });
+                    userId++;
+                    if(userExist == true) {
+                    } else {
+                        var newUsersRef = ref.push();
+                        newUsersRef.set({
+                            username: username,
+                            password: password,
+                            userId: userId
+                        });
+                        document.cookie = "username="+username+"; userId=" + userId + "; path=/";
+                        setCookie("username", username,userId, 30);
+                        document.location.href = "http://localhost:5000/Home/Contact";
+                    }
+                });
+            }
+        } else {
+            alert("Passwords do not match");
+        }
+    }
+
+        function setCookie(cname,cvalue,userId,exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires=" + d.toGMTString();
+    var separator = ":";
+    var values = [cvalue,userId].join(separator);
+    document.cookie = cname+"="+values+"; "+expires + ";path=/";
+    getCookie("username");
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            document.getElementById("title").innerHTML = "Sign in as a different user";
+            if (c.substring(name.length, c.indexOf(":")).length != 0)
+                return c.substring(name.length, c.indexOf(":"));
+        }
+    }
+    document.getElementById("title").innerHTML = "Log In";
+    return "";
+}
+
+</script>
+
+<!--<form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+    <h4>Create a new account.</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Email" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="ConfirmPassword" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ConfirmPassword" class="form-control" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">Register</button>
+        </div>
+    </div>
+</form>-->
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

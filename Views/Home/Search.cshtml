@@ -1,0 +1,591 @@
+@{
+    ViewData["Title"] = "Search";
+}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+  body {
+      position: relative;
+      background-color:#e0e2e5;
+     /* background-image:url(https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRR8dGcOb3yC9OAPhVSzzEIKTi_gzu4d62zloWGjVP2mUH4XwevIw);*/
+      
+  }
+  #section1 {padding-top:50px;height:250px;color: #fff; background-color: #ccc947;}
+  #section2 {padding-top:50px;height:250px;color: #fff; background-color: #82803a;}
+  #section3 {padding-top:50px;height:250px;color: #fff; background-color: #41ad84;}
+
+h1{
+  font-size: 30px;
+  color: #333333;
+  text-transform: uppercase;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 15px;
+}
+table{
+  width:100%;
+  table-layout: fixed;
+}
+.tbl-header{
+  background-color: rgba(255,255,255,0.3);
+ }
+.tbl-content{
+  height:300px;
+  overflow-x:auto;
+  margin-top: 0px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+th{
+  padding: 20px 15px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: #333333;
+  text-transform: uppercase;
+}
+td{
+  padding: 15px;
+  text-align: left;
+  vertical-align:middle;
+  font-weight: 300;
+  font-size: 12px;
+  color: #333333;
+  border-bottom: solid 1px rgba(255,255,255,0.1);
+}
+
+
+
+/* demo styles */
+
+
+body{
+  /*background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+  background: linear-gradient(to right, #25c481, #25b7c4);*/
+  font-family: 'Roboto', sans-serif;
+}
+section{
+  margin: 50px;
+}
+
+/*
+*
+*
+*
+*/
+
+.flexsearch--wrapper {
+	height: auto;
+	width: auto;
+	max-width: 100%;
+	overflow: hidden;
+	background: transparent;
+	margin: 0;
+	position: static;
+}
+	
+.flexsearch--form {
+	overflow: hidden;
+	position: relative;
+}
+	
+.flexsearch--input-wrapper {
+	padding: 0 66px 0 0; /* Right padding for submit button width */
+	overflow: hidden;
+}
+
+.flexsearch--input {
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+}
+
+/***********************
+ * Configurable Styles *
+ ***********************/
+.flexsearch {
+  padding: 0 200px 0 200px; /* Padding for other horizontal elements */
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.flexsearch--input {
+  -webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+ 	height: 60px;
+  padding: 0 46px 0 10px;
+	border-color: #888;
+  border-radius: 35px; /* (height/2) + border-width */
+  border-style: solid;
+	border-width: 5px;
+  margin-top: 15px;
+  color: #333;
+  font-family: 'Roboto', sans-serif;
+	font-size: 26px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+	
+.flexsearch--submit {
+  position: absolute;
+	right: 0;
+	top: 0;
+	display: block;
+	width: 60px;
+	height: 60px;
+  padding: 0;
+  border: none;
+	margin-top: 15px; /* margin-top + border-width */
+  margin-right: 150px; /* border-width */
+	background: transparent;
+  color: #888;
+  font-family: 'Roboto', sans-serif;
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.flexsearch--input:focus {
+  outline: none;
+  border-color: #333;
+}
+
+.flexsearch--input:focus.flexsearch--submit {
+ 	color: #333; 
+}
+
+.flexsearch--submit:hover {
+  color: #333;
+  cursor: pointer;
+}
+
+::-webkit-input-placeholder {
+	color: #888;  
+}
+
+input:-moz-placeholder {
+  color: #888
+}
+
+
+/****************
+ * Pretify demo *
+ ****************/
+.h1 {
+  float: left;
+  margin: 25px;
+  color: #333;
+  font-family: 'Roboto', sans-serif;
+  font-size: 45px;
+  font-weight: bold;
+  line-height: 45px;
+  text-align: center;
+}
+
+</style>
+<div id = "overlay" style="padding-top:5%;">
+<div id = "header" class="jumbotron container text-center">
+  <img src="http://i.imgur.com/lmcvtYR.jpg" style="height:50%; width:60%;"></img>
+  <p>Search for a song to share or add to a playlist here</p> 
+  <div class="flexsearch">
+		<div class="flexsearch--wrapper">
+<!--	<form class="flexsearch--form" action="#" method="post"> -->
+      <form class="flexsearch--form" id="searchbar" target="dummyframe" onsubmit="spotifySearch(); return false;">
+				<div class="flexsearch--input-wrapper">
+					<input class="flexsearch--input" type="search" placeholder="search" id="searchText">
+				<input class="flexsearch--submit" type="submit" value="&#10140;"/>
+        </div>
+			</form>
+		</div>
+  </div>
+  <br/>
+  <form id="searchtype">
+    <input type="radio" name="searchtype" value="Track" checked> Song  
+    <input type="radio" name="searchtype" value="User"> User  
+  </form>
+</div>
+</div>
+
+
+<body>
+
+
+
+<section> <!--for demo wrap-->
+<h1>RESULTS</h1>  
+<div  class="tbl-header">
+<table cellpadding="0" cellspacing="0" border="0">
+  <thead>
+    <tr id="tableheaders">
+    </tr>
+  </thead>
+</table>
+</div>
+<div  class="tbl-content" onmouseover="document.body.style.overflow='hidden';" onmouseout="document.body.style.overflow='auto';">
+<table cellpadding="0" cellspacing="0" border="0">
+  <tbody id="tablebody">
+  </tbody>
+</table>
+</div>
+<br/>
+<div class="searchNavButtons" style="text-align:center">
+  <div class="row">
+<button id="prevpage" class="btn btn-primary" disabled>
+  Prev
+</button>
+<button id="nextpage" class="btn btn-primary" disabled>
+  Next
+</button>
+</div>
+</div>
+</section>
+</body>
+
+        <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCOfxbo4JVNrgeC3OD6M_hGMsb1-JH7oZo",
+                authDomain: "pitch-8ef64.firebaseapp.com",
+                databaseURL: "https://pitch-8ef64.firebaseio.com",
+                storageBucket: "",
+                messagingSenderId: "953525203925"
+            };
+            firebase.initializeApp(config);
+
+            var bigOne = document.getElementById('bigOne');
+            var dbRef = firebase.database().ref().child('Users');
+            //dbRef.on('value', snap => bigOne.innerHTML = getNames(snap.val()));
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        if (c.substring(name.length, c.indexOf(":")).length != 0)
+                          return c.substring(name.length, c.indexOf(":"));
+                    }
+                }
+                document.getElementById("userSignedIn").innerHTML = "Log In";
+                return "";
+            }
+
+            function getUserId(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                         return parseInt(c.substring(c.indexOf(":") + 1, c.length));
+                    }
+                }
+                return 0;
+            }
+            
+            /*function getNames(users) {
+                var myTable= "<table><tr><td style='width: 100px; color: red;'>Users</td></tr>";
+                myTable+="<tr><td style='width: 100px;                   '>---------------</td></tr>";
+                for(let key in users){
+                    if(users.hasOwnProperty(key)){
+                        // Do Something with it. Access it via users[key]
+                        myTable+="<tr><td style='width: 100px;'>" + users[key].username + "</td></tr>"
+                    }
+                }
+                myTable+="</table>";
+                return myTable;
+            }*/
+
+            function getMatchingNames(users) {
+              var myTable="";
+              var superstring = "";
+              var searchText = document.getElementById("searchText").value;
+              var tableBody = document.getElementById('tablebody');
+                for (let key in users) {
+                    if (users.hasOwnProperty(key)){
+                      if (users[key].username == searchText && users[key].userId != getUserId('username')) {
+                          //alert("searchText.value = " + searchText + "\nusers[key].username = " + users[key].username);
+                          superstring += "<tr>";
+                          superstring += "<td>";
+                          superstring += "" + users[key].username;
+                          superstring += "</td>";
+                          superstring += "<td>";
+                          superstring += "<button type=\"button\" class=\"btn btn-primary\" onclick=\"addUser()\">Send Friend Request</button>";
+                          superstring += "</td>";
+                          superstring += "</tr>";
+                      }
+                    }
+                }
+                document.getElementById("tablebody").innerHTML = superstring;
+                return myTable;
+            }
+            
+            function spotifySearch() {
+              var searchTypeForm = document.getElementById("searchtype");
+              var searchType = searchTypeForm.elements["searchtype"].value;
+              if (searchType == "Track") {
+                var xhr = new XMLHttpRequest();
+                xhr.timeout = 2000;
+                xhr.onreadystatechange = function(e) {
+                if(xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                      // response.innerHTML = xhr.response;
+                      // alert(xhr.response);
+                      spotifyParse(xhr.response);
+                    } else {
+                      console.error("Search failed. ", xhr.status);
+                    }
+                  }
+                }
+                xhr.ontimeout = function() {
+                  console.error("request timed out. ", xhr);
+               }
+               var queryString = document.getElementById("searchText").value;
+               var queryString2 = queryString.split(' ').join('+');
+               var requestString = "https://api.spotify.com/v1/search?type=track&q="+queryString2;
+               xhr.open("get", requestString);
+               xhr.send();
+              } else if(searchType == "User") {
+                var tableHeaders = document.getElementById('tableheaders');
+                tableHeaders.innerHTML = "<th>Username</th><th> </th>";
+                var tableBody = document.getElementById('tablebody');
+                dbRef.on('value', snap => getMatchingNames(snap.val()));
+              }
+            }
+
+            function spotifySearch2(requestString) {
+              var searchTypeForm = document.getElementById("searchtype");
+              var searchType = searchTypeForm.elements["searchtype"].value;
+                var xhr = new XMLHttpRequest();
+                xhr.timeout = 2000;
+                xhr.onreadystatechange = function(e) {
+                if(xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                      // response.innerHTML = xhr.response;
+                      // alert(xhr.response);
+                      spotifyParse(xhr.response);
+                    } else {
+                      console.error("Search failed. ", xhr.status);
+                    }
+                  }
+                }
+                xhr.ontimeout = function() {
+                  console.error("request timed out. ", xhr);
+               }
+               xhr.open("get", requestString);
+               xhr.send();
+            }
+
+            function spotifyParse(apiResponse) {
+              var searchType = document.getElementById("searchtype").elements["searchtype"].value;
+              var obj = JSON.parse(apiResponse);
+
+              if (obj.tracks.next === null) {
+                document.getElementById("nextpage").disabled = true;
+              } else {
+                document.getElementById("nextpage").disabled = false;
+                document.getElementById("nextpage").onclick = function() {spotifySearch2(obj.tracks.next)};
+              }
+              if (obj.tracks.previous === null) {
+                document.getElementById("prevpage").disabled = true;
+              } else {
+                document.getElementById("prevpage").disabled = false;
+                document.getElementById("prevpage").onclick = function() {spotifySearch2(obj.tracks.previous)};
+              }
+
+              var tableHeaders = document.getElementById('tableheaders');
+              tableHeaders.innerHTML = "<th>Title</th><th>Artist</th><th>Album</th><th> </th><th> </th>";
+              
+              if (searchType == "Track") {
+                var superstring = "";
+                  var ref = firebase.database().ref().child("GroupRelationships");
+                  ref.orderByValue().on("value", function(snapshot) {
+                    var ref2 = firebase.database().ref().child("Groups");
+                    ref2.orderByValue().on("value", function(snapshot2) {
+                    for (var i = 0; i < obj.tracks.limit && i + obj.tracks.offset < obj.tracks.total; i++) {
+                    superstring += "<tr id=\"" + obj.tracks.items[i].id + "\" >";
+                    superstring += "<td>";
+                    superstring += obj.tracks.items[i].name;
+                    superstring += "</td>";
+                    superstring += "<td>";
+                    superstring += obj.tracks.items[i].artists[0].name;
+                    superstring += "</td>";
+                    superstring += "<td>";
+                    superstring += obj.tracks.items[i].album.name;
+                    superstring += "</td>";
+                    superstring += "<td>";
+                    superstring += "<div class=\"dropdown\"><button class=\"btn btn-primary dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">Add To... <span class=\"caret\"></span></button><ul class=\"dropdown-menu\">"
+                    
+                    
+                    
+                    var groupnames = [];
+                    var groupIds = [];
+                    var k = 0;
+                    var userId = getUserId('username');
+                    snapshot.forEach(function(data) {
+                        snapshot2.forEach(function(data2) {
+                            if(data2.val().groupId == data.val().groupId && data.val().recvId == userId && data.val().status == 1) {
+                                groupnames[k] = data2.val().groupname;
+                                groupIds[k] = data2.val().groupId;
+                                k++;
+                            }
+                        });
+                      });
+                    for(var j = 0; j < groupnames.length; j++) {
+                          superstring += "<li><a href=\"#\" onclick=\"recommendSong('" + obj.tracks.items[i].id + "', " + groupIds[j] + ");\">" + groupnames[j] + "</a></li>"
+                    }
+                    //superstring += "<li><a href=\"#\">Group 1</a></li><li><a href=\"#\">Group 2</a></li><li><a href=\"#\">Group 3</a></li>"
+                    superstring += "</ul></div>";
+                    superstring += "</td>";
+
+                    superstring += "<td>";
+                    superstring += "<div><button class=\"btn btn-success\" type=\"button\" onclick=\"shareSongToFeed('" +  obj.tracks.items[i].id + "');\">Share!</button>"
+
+                    superstring += "</tr>";    
+                    }
+                    document.getElementById("tablebody").innerHTML = superstring;
+                  });
+                });
+                //document.getElementById("tablebody").innerHTML = superstring;
+              }
+            }
+
+            function shareSongToFeed(songId) {
+              var d = new Date();
+              var n = d.getTime();
+              var userId = getUserId('username');
+              var feedRef = firebase.database().ref().child("Feed");
+              var newFeedRef = feedRef.push();
+                            newFeedRef.set({
+                                timestamp: n,
+                                userId: userId,
+                                songId: songId,
+                                groupId: 0,
+                                username: getCookie('username')
+                            });
+            }
+
+
+    function recommendSong(id, groupId) {
+      var voteId = 0;
+      var userId = getUserId('username');
+      var numOfPeopleInGroup = 0
+      var ref = firebase.database().ref().child("GroupRelationships");
+      ref.orderByValue().on("value", function(snapshot) {
+        numOfPeopleInGroup = 0
+        snapshot.forEach(function(data) {
+        if(data.val().groupId == groupId) {
+          numOfPeopleInGroup++;
+        }
+        });
+      var songsRef = firebase.database().ref().child("Songs");
+      var exists = 0;
+      songsRef.orderByValue().on("value", function(snapshot) {
+        snapshot.forEach(function(data) {
+          voteId = data.val().voteId;
+          if(data.val().songId == id && groupId == data.val().groupId) {
+            exists = 1;
+          }
+        });
+        voteId = Math.floor(Math.random() * (10000000 - 1)) + 1;
+        if(exists == 0) {
+        var theVoteId = voteId;
+        var inPlaylist = false;
+        if(numOfPeopleInGroup <= 2) {
+          inPlaylist = true;
+        }
+        var newSongsRef = songsRef.push();
+        newSongsRef.set({
+          voteId: theVoteId,
+          songId: id,
+          groupId: groupId,
+          userId: userId,
+          plusVote: 1,
+          negVote: 0,
+          inPlaylist: inPlaylist
+        });
+        var voteRef = firebase.database().ref().child("Votes");
+        var newvoteRef = voteRef.push();
+        newvoteRef.set({
+          voteId: theVoteId,
+          userId: userId,
+          vote: 1
+        });
+        }
+      });
+        });
+    }
+        
+
+    function addUser() {
+        var friendName = document.getElementById("searchText").value;
+        var userId = 0;
+
+            if(friendName.length < 0) {
+                alert("Didn't type in a Friend Name!");
+            } else {
+                var ref = firebase.database().ref().child("Users");
+                ref.orderByValue().on("value", function(snapshot) {
+                    var userExist = false;
+                    snapshot.forEach(function(data) {
+                        if(data.val().username == friendName) {
+                            userExist = true;
+                            userId = data.val().userId;
+                        }
+                    });
+                    if(userExist == true) {
+                        var sendId = getUserId('username');
+                        if(sendId != userId) {
+                            var friendshipsref = firebase.database().ref().child("Friendships");
+                            var friendshipExists = false;
+                            friendshipsref.orderByValue().on("value", function(snapshot2) {
+                                snapshot2.forEach(function(data2) {
+                                    if((data2.val().recvId == userId && data2.val().sendId == sendId) || (data2.val().recvId == sendId && data2.val().sendId == userId)) {
+                                        friendshipExists = true;
+                                    }
+                                });
+                                if(friendshipExists == false) {
+                                var newFriendshipsref = friendshipsref.push();
+                                newFriendshipsref.set({
+                                  sendId: sendId,
+                                  recvId: userId,
+                                  status: 2
+                                });
+                                }
+                            });
+                        }
+                    } else {
+                        alert("Username doesnt exist");
+                    }
+                });
+            }
+    }
+
+    function getUserId(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                         return parseInt(c.substring(c.indexOf(":") + 1, c.length));
+                    }
+                }
+                return 0;
+            }
+
+</script>
+
+<iframe height=0 width=0 name="dummyframe" hidden=true />

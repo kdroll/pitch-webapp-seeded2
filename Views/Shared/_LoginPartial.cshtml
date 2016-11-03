@@ -1,0 +1,94 @@
+@using Microsoft.AspNetCore.Identity
+@using Pitch.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<body onload="getCookie('username'); isUserLoggedIn();">
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+            </li>
+            <li>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log off</button>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a id="LogoutButton" asp-area="" asp-controller="Home" asp-action="Index"></a></li>
+        <li><a id="RegisterButton" asp-area="" asp-controller="Account" asp-action="Register"></a></li>
+        <li><a id="userSignedIn" asp-area="" asp-controller="Account" asp-action="Login"></a></li>
+    </ul>
+}
+
+<script type="text/javascript">
+    var el = document.getElementById('LogoutButton');
+    el.onclick = clear;
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                if (c.substring(name.length, c.indexOf(":")).length != 0)
+                    return c.substring(name.length, c.indexOf(":"));
+            }
+        }
+        document.getElementById("userSignedIn").innerHTML = "Log In";
+        return "";
+    }
+    function isUserLoggedIn() {
+        if (getCookie("username").length == 0) {
+            //alert("not logged in");
+            var r = document.getElementById("RegisterButton");
+            var l = document.getElementById("LogoutButton");
+            r.innerHTML = "Register";
+
+            $("#RegisterButton").show();
+            $("#LogoutButton").hide();
+            return false;
+        } else {
+            //alert("setting to logout");
+            var r = document.getElementById("RegisterButton");
+            var l = document.getElementById("LogoutButton");
+            l.innerHTML = "Log Out";
+            //alert("set to logout");
+            //a.parentNode.removeChild(a);
+            $("#RegisterButton").hide();
+            $("#LogoutButton").show();
+            
+            //document.getElementById("RegisterButton")[0].setAttribute("asp-action", "Logout");
+            //a.action = "Logout";
+            //$(a).attr("asp-action", "Logout");
+            //a.setAttribute('href', "Logout");
+
+            //alert("logged in");
+            return true;
+        }
+    } 
+
+    function clear() {
+        
+        var d = new Date();
+        var exdays = 30;
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires=" + d.toGMTString();
+        var separator = ":";
+        var values = ":";
+        document.cookie = "username"+"="+values+"; "+expires + ";path=/";
+
+        return true;
+    }
+ </script>

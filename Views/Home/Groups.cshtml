@@ -1,0 +1,423 @@
+@{
+    ViewData["Title"] = "Groups";
+}
+
+<style>
+  body {
+      position: relative;
+      background-color:#e0e2e5;
+  }
+  #section1 {padding-top:50px;height:250px;color: #fff; background-color: #ccc947;}
+  #section2 {padding-top:50px;height:250px;color: #fff; background-color: #82803a;}
+  #section3 {padding-top:50px;height:250px;color: #fff; background-color: #41ad84;}
+
+h1{
+  font-size: 30px;
+  color: #333333;
+  text-transform: uppercase;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 15px;
+}
+table{
+  width:100%;
+  table-layout: fixed;
+}
+.tbl-header{
+  background-color: rgba(255,255,255,0.3);
+ }
+.tbl-content{
+  height:300px;
+  overflow-x:auto;
+  margin-top: 0px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+th{
+  padding: 20px 15px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: #333333;
+  text-transform: uppercase;
+}
+td{
+  padding: 15px;
+  text-align: left;
+  vertical-align:middle;
+  font-weight: 300;
+  font-size: 12px;
+  color: #333333;
+  border-bottom: solid 1px rgba(255,255,255,0.1);
+}
+
+/* demo styles */
+
+
+body{
+  /*background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+  background: linear-gradient(to right, #25c481, #25b7c4);*/
+  font-family: 'Roboto', sans-serif;
+}
+section{
+  margin: 50px;
+}
+
+/* for custom scrollbar for webkit browser*/
+
+::-webkit-scrollbar {
+    width: 6px;
+} 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+} 
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}
+  .affix {
+      top: 150px;
+      width:235px;
+  }
+    .affix2 {
+      top: 255px;
+  }
+  div.col-sm-9 div {
+      height: 250px;
+      font-size: 28px;
+  }
+  
+
+
+  </style>
+
+
+
+<div id = "overlay" style="padding-top:5%;">
+<div id = "header" class="container text-center">
+  <h1 style="font-family:Impact; color:#5c6066; font-size:1000%"><img src="http://i.imgur.com/tNTYAvv.jpg" width="800" height="500" ></img></h1>
+</div>
+</div>
+
+<div class="container" style="background-image:url(https://static.vecteezy.com/system/resources/previews/000/095/588/non_2x/vector-abstract-pattern-background.jpg);     position: absolute;
+    width: 100%;
+    left: 0;">
+  
+<div class="col-md-3" >
+    <div class="containter" data-spy="affix" data-offset-top="480" style="padding-top:100px;">
+        <div id=CreateNewGroupDiv></div>
+    </br>
+    <!--<form action="Search">
+    <button type="submit" class="btn btn-primary btn-block" style="background-color:#c1c1c1; border-color: #c1c1c1;">Search Songs</button>
+    </form>-->
+    </div>
+</div>
+
+<div class="col-md-9" style="padding-top:100px;">
+    <div id=playlistss></div>
+  </div>
+  
+
+<body onload="getCookie('username')">
+
+
+
+        <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCOfxbo4JVNrgeC3OD6M_hGMsb1-JH7oZo",
+                authDomain: "pitch-8ef64.firebaseapp.com",
+                databaseURL: "https://pitch-8ef64.firebaseio.com",
+                storageBucket: "",
+                messagingSenderId: "953525203925"
+            };
+            firebase.initializeApp(config);
+
+            var CreateNewGroup = document.getElementById('CreateNewGroupDiv');
+            var userId = getUserId("username");
+            CreateNewGroup.innerHTML = '<form action="CreateNewGroup/' + userId + '"><button type="submit" class="btn btn-primary btn-block" style="background-color:#c1c1c1; border-color: #c1c1c1;">Create New Group</button></form>';
+            var friends = [];
+
+            /*var bigOne = document.getElementById('bigOne');
+            var dbRef = firebase.database().ref().child('Users');
+            dbRef.on('value', snap => bigOne.innerHTML = getNames(snap.val()));
+
+
+            var littleOne = document.getElementById('littleOne');
+            dbRef2.on('value', snap => littleOne.innerHTML = getGroups(snap.val()));*/
+            var dbRef2 = firebase.database().ref().child('Groups');
+            dbRef2.on('value', snap => playlistss.innerHTML = getPlayListss(snap.val()));
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        if (c.substring(name.length, c.indexOf(":")).length != 0)
+                            return c.substring(name.length, c.indexOf(":"));
+                    }
+                }
+                document.getElementById("userSignedIn").innerHTML = "Log In";
+                return "";
+            }
+
+            function getUserId(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                         return parseInt(c.substring(c.indexOf(":") + 1, c.length));
+                    }
+                }
+                return 0;
+            }
+            
+            function getNames(users) {
+                var myTable= "<table><tr><td style='width: 100px; color: red;'>Users</td></tr>";
+                myTable+="<tr><td style='width: 100px;                   '>---------------</td></tr>";
+                for(let key in users){
+                    if(users.hasOwnProperty(key)){
+                        // Do Something with it. Access it via users[key]
+                        myTable+="<tr><td style='width: 100px;'>" + users[key].username + "</td></tr>"
+                    }
+                }
+                myTable+="</table>";
+                return myTable;
+            }
+
+    function addUser() {
+        var friendName = document.getElementById("friendName").value;
+        var userId = 0;
+
+            if(friendName.length < 0) {
+                alert("Didn't type in a Friend Name!å");
+            } else {
+                var ref = firebase.database().ref().child("Users");
+                ref.orderByValue().on("value", function(snapshot) {
+                    var userExist = false;
+                    snapshot.forEach(function(data) {
+                        userId = data.val().userId;
+                        if(data.val().username == friendName) {
+                            userExist = true;
+                        }
+                    });
+                    if(userExist == true) {
+                        var sendId = getUserId('username');
+                        if(sendId != userId) {
+                            var friendshipsref = firebase.database().ref().child("Friendships");
+                            var newFriendshipsref = friendshipsref.push();
+                            newFriendshipsref.set({
+                                sendId: sendId,
+                                recvId: userId,
+                                status: 2
+                            });
+                        }
+                    } else {
+                        alert("Username doesnt exist");
+                    }
+                });
+            }
+    }
+
+        function makeGroup() {
+        var groupName = document.getElementById("groupName").value;
+        var userId = 0;
+
+            if(groupName.length < 0) {
+                alert("Didn't type in a Group Name!");
+            } else {
+                var ref = firebase.database().ref().child("Groups");
+                ref.orderByValue().on("value", function(snapshot) {
+                    var userExist = false;
+                    var groupId = 0;
+                    snapshot.forEach(function(data) {
+                        groupId = data.val().groupId;
+                        if(data.val().groupname == groupName) {
+                            userExist = true;
+                        }
+                    });
+                    groupId++;
+                    if(userExist == false) {
+                        var sendId = getUserId('username');
+                            var groupsref = firebase.database().ref().child("Groups");
+                            var newGroupsref = groupsref.push();
+                            newGroupsref.set({
+                                groupname: groupName,
+                                groupId: groupId
+                            });
+                            var groupsRelationshipsref = firebase.database().ref().child("GroupRelationships");
+                            var newGroupsRelationshipsref = groupsRelationshipsref.push();
+                            newGroupsRelationshipsref.set({
+                                groupId: groupId,
+                                sendId: sendId,
+                                recvId: sendId,
+                                status: 1
+                            });
+                            location.reload();
+                    } else {
+                        //alert("Group already exists");
+                    }
+                });
+            }
+    }
+
+        function getGroups(groups) {
+                var myTable= "<table><tr><td style='width: 100px; color: red;'>Groups</td></tr>";
+                myTable+="<tr><td style='width: 100px;                   '>---------------</td></tr>";
+                for(let key in groups){
+                    if(groups.hasOwnProperty(key)){
+                        // Do Something with it. Access it via users[key]
+                        myTable+="<tr><td style='width: 100px;'>" + groups[key].groupname + "</td></tr>"
+                    }
+                }
+                myTable+="</table>";
+                return myTable;
+            }
+
+    function addUserToGroup() {
+        var friendName = document.getElementById("personToAddToGroup").value;
+        var groupName = document.getElementById("groupNameForPersonToAdd").value;
+        var userId = 0;
+
+            if(friendName.length < 0 || groupName.length < 0) {
+                alert("Didn't type valid friendname or groupname!");
+            } else {
+                var userExist = false;
+                var friendId = 0;
+                var Usersref = firebase.database().ref().child("Users");
+                Usersref.orderByValue().on("value", function(snapshot) {
+                    snapshot.forEach(function(data) {
+                        if(data.val().username == friendName) {
+                            userExist = true;
+                            friendId = data.val().userId;
+                        }
+                    });
+                });
+                var ref = firebase.database().ref().child("Groups");
+                ref.orderByValue().on("value", function(snapshot) {
+                    var groupExist = false;
+                    var groupId = 0;
+                    snapshot.forEach(function(data) {
+                        if(data.val().groupname == groupName) {
+                            groupExist = true;
+                            groupId = data.val().groupId;
+                        }
+                    });
+                    if(userExist == true && groupExist == true) {
+                        
+                        var sendId = getUserId('username');
+                        if(sendId != friendId) {
+                            var GroupRelationshipsref = firebase.database().ref().child("GroupRelationships");
+                            var dontSend = false;
+                            GroupRelationshipsref.orderByValue().on("value", function(snapshot2) {
+                                snapshot2.forEach(function(data2) {
+                                    if(friendId == data2.val().recvId && groupId == data2.val().groupId) {
+                                        dontSend = true;
+                                    }
+                                });
+                                if(!dontSend) {
+                            var newGroupRelationshipsref = GroupRelationshipsref.push();
+                            newGroupRelationshipsref.set({
+                                groupId: groupId,
+                                sendId: sendId,
+                                recvId: friendId,
+                                status: 2
+                            });
+                            }
+                            });
+                        }
+                    } else {
+                        alert("FriendName or Group doesnt exist");
+                    }
+                });
+            }
+    }
+
+
+    function getPlayListss(groups) {
+        playlistss.innerHTML = "";
+        var myTable="";
+        var num = 0;
+        var userId = getUserId('username');
+        var userIds = [];
+        var usernames = [];
+        for(let key in groups){
+            if(groups.hasOwnProperty(key)){
+                userIds = [];
+                usernames = [];
+                var ref = firebase.database().ref().child("GroupRelationships");
+                ref.orderByValue().on("value", function(snapshot) {
+                    var Usersref = firebase.database().ref().child("Users");
+                    Usersref.orderByValue().on("value", function(snapshot2) {
+                        var i = 0;
+                        var notInGroup = false;
+                        snapshot.forEach(function(data) {
+                            if(data.val().groupId == groups[key].groupId && data.val().status == 1) {
+                                var isUnique = true;
+                                if((data.val().recvId == userId || data.val().sendId == userId)) {
+                                    notInGroup = true;
+                                }
+                                for(var j = 0; j < userIds.length; j++) {
+                                    if(userIds[j] == data.val().recvId) {
+                                        isUnique = false;
+                                    }
+                                }
+                                if(isUnique) {
+                                    userIds[i] = data.val().recvId;
+                                    i++;
+                                }
+                            }
+                        });
+                        var k = 0;
+                        snapshot2.forEach(function(data2) {
+                            for(var q = 0; q < userIds.length; q++) {
+                                if(data2.val().userId == userIds[q]) {
+                                    usernames[k] = data2.val().username;
+                                    k++;
+                                }
+                            }
+                        });
+                        if(notInGroup) {
+                            var copy="";
+                            copy += '<div class="panel-group">';
+                            copy += '<div class="panel panel-default" style = "background-color:#bf8bd3;">';
+                            copy += '<div class="panel-heading" style = "background-color:#bf8bd3; ">';
+                            copy += '<h4 class="panel-title" style = "background-color:#bf8bd3;">';
+                            copy += '<a data-toggle="collapse" href="#collapse' + num + '">' + groups[key].groupname + '</a>';
+                            copy += '</h4>';
+                            copy += '</div>';
+                            copy += '<div id="collapse' + num + '" class="panel-collapse collapse">';
+                            num++;
+                            copy += '<ul class="list-group">';
+                            for(var x = 0; x < usernames.length; x++) {
+                                copy += '<li class="list-group-item">' + usernames[x] + '</li>';
+                            }
+                            copy += '</ul>';
+                            copy += '<div class="panel-footer">';
+                            copy += '<form action="Playlist/' + groups[key].groupId + '">';
+                            copy += '<button type="submit" class="btn btn-default">View Group Pitchlist</button>';
+                            copy += '</form>';
+                            copy += '<br><form action="AddFriends/' + groups[key].groupId + '"> <button type="submit" class="btn btn-default">Add Friends</button></form>';
+                            copy += '</div></div></div></div>'
+                            myTable += copy;
+                            playlistss.innerHTML += copy;
+                            userIds = [];
+                            usernames = [];
+                        }
+                    });
+                });
+            }
+        }
+        return myTable;
+    }
+
+</script>
