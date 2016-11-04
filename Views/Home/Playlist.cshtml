@@ -304,9 +304,9 @@ section{
                         stringSongs2 += getSongInfo(songs[key].songId);
                         stringSongs2 += "<td>" + (songs[key].plusVote + songs[key].negVote) + "</td>";
                         if(numOfPeopleInGroup % 2 == 0) {
-                          stringSongs2 += "<td>" + Math.floor((numOfPeopleInGroup/2) - (songs[key].plusVote)) + "</td>";
+                          stringSongs2 += "<td>" + ((numOfPeopleInGroup/2) - (songs[key].plusVote)) + "</td>";
                         } else {
-                          stringSongs2 += "<td>" + Math.floor(((numOfPeopleInGroup/2) + 1) - (songs[key].plusVote)) + "</td>";
+                          stringSongs2 += "<td>" + (((numOfPeopleInGroup/2) + 1) - (songs[key].plusVote)) + "</td>";
                         }
                        stringSongs2 += "<td><button style = 'color:green;'onclick='vote(1, \"" + songs[key].voteId + "\")'>Vote Yes</button></td><td><button style = 'color:red;'onclick='vote(0, \"" + songs[key].voteId + "\")'>Vote No</button></td>"
                         stringSongs2 += "</tr>";
@@ -344,7 +344,7 @@ section{
                     if(songsList.hasOwnProperty(key) && songsList[key].inPlaylist == false){
                         if(songsList[key].voteId == id) {
                           if(vote == 1) {
-                          var inPlaylistvalue = (((Math.ceil(numInGroup / 2) - (songsList[key].plusVote + 1)) <= 0));
+                          var inPlaylistvalue = ((((numInGroup / 2) - (songsList[key].plusVote + 1)) <= 0));
                           //alert(inPlaylistvalue);
                           if(dontVote == false) {
                           firebase.database().ref('Songs/' + key).set({
@@ -358,10 +358,10 @@ section{
                           });
                           }
                         } else {
-                          var remove = (((Math.floor(numInGroup / 2) - (songsList[key].negVote + 1)) < 0));
+                          var remove = (((Math.ceil(numInGroup / 2) - (songsList[key].negVote + 1)) < 0));
                           if(dontVote == false) {
                           if(remove) {
-                            firebase.database().ref('Songs/' + key).remove();
+                           // firebase.database().ref('Songs/' + key).remove();
                           } else {
                           firebase.database().ref('Songs/' + key).set({
                             voteId: songsList[key].voteId,
@@ -423,7 +423,7 @@ section{
                           ref.orderByValue().on("value", function(snapshot) {
                                snapshot.forEach(function(data) {
                                   if(data.val().userId == groupRelationships[key].sendId) {
-                                    createdBy.innerHTML = "Created By: " + data.val().username;
+                                    createdBy.innerHTML = "Created By: undefined";
                                     username = data.val().username;
                                   }
 
