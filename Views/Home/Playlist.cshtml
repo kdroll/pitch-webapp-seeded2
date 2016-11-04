@@ -269,7 +269,7 @@ section{
                 if(xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       var obj = JSON.parse(xhr.response);
-                      returnString = "<td>" + obj.name + "</td><td>" + obj.artists[0].name + "</td><td>" + obj.album.name + "</td>";
+                      returnString = "<td>" + obj.album.name + "</td><td>" + obj.artists[0].name + "</td><td>" + obj.name + "</td>";
                   } else {
                       console.error("Search failed. ", xhr.status);
                   }
