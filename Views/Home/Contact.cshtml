@@ -174,11 +174,11 @@ $(".btn-pref .btn").click(function () {
         var favorites = document.getElementById("favorites");
         var following = document.getElementById("following");
         var notifications = document.getElementById("notifications");
-        favorites.onclick = function() {
-            favorites.className = "btn btn-primary";
-            following.className = "btn btn-default";
-            notifications.className = "btn btn-default";
-        };
+       // favorites.onclick = function() {
+         //   favorites.className = "btn btn-primary";
+           // following.className = "btn btn-default";
+           // notifications.className = "btn btn-default";
+        //};
         following.onclick = function() {
             favorites.className = "btn btn-default";
             following.className = "btn btn-primary";
@@ -334,7 +334,7 @@ function getPending(friendships) {
             littleOne.innerHTML = "";
             getFriends();
             if(friends.length == 0) {
-                littleOne.innerHTML = "<h2>None</h2>";
+                //littleOne.innerHTML = "<h2>None</h2>";
             }
             var myTable= "";
             var displayOnce = 0;
