@@ -71,7 +71,7 @@
                         c = c.substring(1);
                     }
                     if (c.indexOf(name) == 0) {
-                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.length);
+                        document.getElementById("userSignedIn").innerHTML = "Log In";//c.substring(name.length, c.length);
                         if (c.substring(name.length, c.indexOf(":")).length != 0)
                             return c.substring(name.length, c.length);
                     }
@@ -186,7 +186,7 @@ function getUserId(cname) {
                         c = c.substring(1);
                     }
                     if (c.indexOf(name) == 0) {
-                        document.getElementById("userSignedIn").innerHTML = c.substring(name.length, c.indexOf(":"));
+                        document.getElementById("userSignedIn").innerHTML = "Log In";//c.substring(name.length, c.indexOf(":"));
                         return parseInt(c.substring(c.indexOf(":") + 1, c.length));
                     }
                 }
