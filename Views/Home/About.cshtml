@@ -142,7 +142,9 @@ function getFeed(feed) {
                         //feedString += '<p>Check it out here: <a href="#">Pitch</a>, <a href="#">Spotify</a>, <a href="#">Google</a></p>';
                         feedString += '</div></div></div></div><br></br>';  
                         myFeed += feedString;
-                        feedObject.innerHTML += feedString;
+                        feedString += feedObject.innerHTML;
+                        feedObject.innerHTML = feedString;
+                        //feedObject.innerHTML += feedString;
                     } else {
                         var feedString = "";
                         feedString += '<div class="row" style="overflow:scroll; box-shadow: 0 0 1pt 1pt black; background-color:#e8ebef; border-radius:25px;">';
@@ -166,7 +168,9 @@ function getFeed(feed) {
                         //feedString += '<p>Check it out here: <a href="#">Pitch</a>, <a href="#">Spotify</a>, <a href="#">Google</a></p>';
                         feedString += '</div></div></div></div><br></br>';  
                         myFeed += feedString;
-                        feedObject.innerHTML += feedString;
+                        feedString += feedObject.innerHTML;
+                        feedObject.innerHTML = feedString;
+                        //feedObject.innerHTML += feedString;
                     }
                 }
             });
