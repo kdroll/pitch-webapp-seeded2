@@ -350,8 +350,8 @@ input:-moz-placeholder {
                   console.error("request timed out. ", xhr);
                }
                var queryString = document.getElementById("searchText").value;
-               var queryString2 = queryString.split(' ').join('+');
-               var requestString = "https://api.spotify.com/v1/search?type=track&q="+queryString2;
+               //var queryString2 = queryString.split(' ').join('+');
+               var requestString = "https://api.spotify.com/v1/search?type=track&q="+queryString;
                xhr.open("get", requestString);
                xhr.send();
               } else if(searchType == "User") {
@@ -389,7 +389,7 @@ input:-moz-placeholder {
               var searchType = document.getElementById("searchtype").elements["searchtype"].value;
               var obj = JSON.parse(apiResponse);
 
-              if (obj.tracks.next === null) {
+              if (obj.tracks.next != null) {
                 document.getElementById("nextpage").disabled = true;
               } else {
                 document.getElementById("nextpage").disabled = false;
