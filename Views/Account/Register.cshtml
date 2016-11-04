@@ -96,9 +96,9 @@
 
         if(password == confirmPass) {
             if (username.length < 3) {
-                alert("Username too small; must be longer than 3 characters");
-            } else if(password.length < 3) {
-                alert("Password too small; must be longer than 3 characters");
+                //alert("Username too small; must be longer than 3 characters");
+           // } else if(password.length < 3) {
+                //alert("Password too small; must be longer than 3 characters");
             } else {
                 var ref = firebase.database().ref().child("Users");
                 ref.orderByValue().on("value", function(snapshot) {
